@@ -1,29 +1,32 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-  <TestPage msg="TestPage"/>
+  <MyHeader header_title="WellCUM to Tables Service"/>
+  <AuthTable/>
 </template>
 
+
+
+
 <script>
-//import HelloWorld from './components/HelloWorld.vue'
-import TestPage from './components/TestPage.vue';
+import MyHeader from './components/MyHeader.vue';
+import AuthTable from './components/AuthTable.vue';
 
 export default {
   name: 'App',
   components: {
-    //HelloWorld
-    TestPage
+    MyHeader,
+    AuthTable
   }
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  /* margin-top: 60px; */
 }
+
 </style>

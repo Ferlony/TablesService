@@ -15,7 +15,7 @@ object DatabaseFactory {
         transaction(testDB) {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(Tests)
-            //commit()
+            //commit() do stuff what?
             //Do stuff
         }
     }
@@ -25,12 +25,13 @@ object DatabaseFactory {
 }
 
 
-data class Test(val id: Int, val title: String, val body: String)
+data class Test(val id: Int, val username: String, val password: String)
 
 object Tests : Table() {
+    // fields of table: id title and body?
     val id = integer("id").autoIncrement()
-    val title = varchar("title", 128)
-    val body = varchar("body", 1024)
+    val username = varchar("title", 128)
+    val password = varchar("body", 1024)
 
     override val primaryKey = PrimaryKey(id)
 }

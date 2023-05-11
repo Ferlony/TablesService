@@ -7,8 +7,8 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 class DatabaseQueries : IDatabaseQueries {
     private fun resultRowToTest(row: ResultRow) = Test(
         id = row[Tests.id],
-        title = row[Tests.title],
-        body = row[Tests.body],
+        username = row[Tests.username],
+        password = row[Tests.password],
     )
 
     override suspend fun allTests(): List<Test> = DatabaseFactory.dbQuery {
@@ -22,18 +22,18 @@ class DatabaseQueries : IDatabaseQueries {
             .singleOrNull()
     }
 
-    override suspend fun addNewTest(title: String, body: String): Test? = DatabaseFactory.dbQuery {
+    override suspend fun addNewTest(username: String, password: String): Test? = DatabaseFactory.dbQuery {
         val insertStatement = Tests.insert {
-            it[Tests.title] = title
-            it[Tests.body] = body
+            it[Tests.username] = username
+            it[Tests.password] = password
         }
         insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToTest)
     }
 
-    override suspend fun editTest(id: Int, title: String, body: String): Boolean = DatabaseFactory.dbQuery {
+    override suspend fun editTest(id: Int, username: String, password: String): Boolean = DatabaseFactory.dbQuery {
         Tests.update({ Tests.id eq id }) {
-            it[Tests.title] = title
-            it[Tests.body] = body
+            it[Tests.username] = username
+            it[Tests.password] = password
         } > 0
     }
 

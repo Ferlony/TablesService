@@ -11,9 +11,13 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
+    "@grapecity/spread-excelio": "^16.1.1",
+    "@grapecity/spread-sheets": "^16.1.1",
+    "@grapecity/spread-sheets-vue": "^16.1.1",
     "axios": "^1.4.0",
     "bootstrap": "^4.6.2",
     "core-js": "^3.8.3",
+    "file-saver": "^2.0.5",
     "jquery": "^3.6.4",
     "popper.js": "^1.16.1",
     "vee-validate": "^4.9.1",
@@ -43,7 +47,10 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {"vue/multi-word-component-names": "off"}  },
+    "rules": {
+      "vue/multi-word-component-names": "off"
+    }
+  },
   "browserslist": [
     "> 1%",
     "last 2 versions",

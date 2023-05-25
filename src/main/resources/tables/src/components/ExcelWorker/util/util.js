@@ -26,13 +26,20 @@ export const withCommas = (x) => {
 }
 
 const columnMappings = {
+    // "ID": "id",
+    // "Client": "client",
+    // "Description": "description",
+    // "Value": "value",
+    // "Quantity": "itemCount",
+    // "Sold By": "soldBy",
+    // "Country": "country"
     "ID": "id",
-    "Client": "client",
+    "Topic": "topic",
     "Description": "description",
-    "Value": "value",
-    "Quantity": "itemCount",
-    "Sold By": "soldBy",
-    "Country": "country"
+    "User": "user",
+    "Userstatus": "userstatus",
+    "Checked": "checked"
+    // "Tabletitle": "tabletitle"
 }
 
 const objectToArray = (dataObject) => {

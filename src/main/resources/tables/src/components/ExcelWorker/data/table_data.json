@@ -3,6 +3,7 @@
     "id": "1",
     "topic": "Что то про C",
     "description": "abooba",
+    "user": "Ryan Gosling",
     "userstatus": "Done",
     "checked": "Yes",
     "tabletitle": "Class A"
@@ -11,7 +12,8 @@
     "id": "2",
     "topic": "Что то про java",
     "description": "abooba",
-    "userstatus": "In progress",
+    "user": "Christian Bale",
+    "userstatus": "Prog",
     "checked": "No",
     "tabletitle": "Class A"
   },
@@ -19,7 +21,8 @@
     "id": "3",
     "topic": "Что то про js",
     "description": "abooba",
-    "userstatus": "In progress",
+    "user": "Robert De Niro",
+    "userstatus": "Prog",
     "checked": "No",
     "tabletitle": "Class A"
   },
@@ -27,6 +30,7 @@
     "id": "4",
     "topic": "Что то про python",
     "description": "abooba",
+    "user": "Totally me",
     "userstatus": "Done",
     "checked": "No",
     "tabletitle": "Class A"

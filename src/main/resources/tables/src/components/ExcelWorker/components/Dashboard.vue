@@ -2,20 +2,20 @@
     <NavBar/>
     <div class="container">
       <div class="row">
-        <SalesTable :tableData="salesTableData"/>
+        <TopicsTable :tableData="topicsTableData"/>
       </div>
     </div>
 </template>
 
 <script>
 import NavBar from "./NavBar";
-import SalesTable from "./TopicsTable";
+import TopicsTable from "./TopicsTable";
 
 export default {
-  components: { NavBar, SalesTable},
+  components: { NavBar, TopicsTable},
   computed: {
-    salesTableData() {
-      return this.$store.state.recentSales;
+    topicsTableData() {
+      return this.$store.state.recentTopics;
     },
   }
 };

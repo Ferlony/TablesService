@@ -6,6 +6,7 @@ import io.ktor.server.testing.*
 import kotlin.test.*
 import io.ktor.http.*
 import com.tables.plugins.*
+import org.junit.Test
 
 class ApplicationTest {
     @Test

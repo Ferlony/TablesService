@@ -6,46 +6,54 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class DatabaseQueries : IDatabaseQueries {
     private fun resultRowToTest(row: ResultRow) = Test(
-        id = row[Tests.id],
-        username = row[Tests.username],
-        password = row[Tests.password],
+        email = row[BaseForUsers.email],
+        username = row[BaseForUsers.username],
+        password = row[BaseForUsers.password],
     )
 
-    override suspend fun allTests(): List<Test> = DatabaseFactory.dbQuery {
-        Tests.selectAll().map(::resultRowToTest)
+    override suspend fun allUsers(): List<Test> = DatabaseFactory.dbQuery {
+        BaseForUsers.selectAll().map(::resultRowToTest)
     }
 
-    override suspend fun test(id: Int): Test? = DatabaseFactory.dbQuery {
+    /*override suspend fun findById(id: Int): Test? = DatabaseFactory.dbQuery {
         Tests
-            .select { Tests.id eq id }
+            .select { Tests. eq id }
+            .map(::resultRowToTest)
+            .singleOrNull()
+    }*/
+
+    override suspend fun findByName(username: String): Test? = DatabaseFactory.dbQuery {
+        BaseForUsers
+            .select { BaseForUsers.username eq username }
             .map(::resultRowToTest)
             .singleOrNull()
     }
 
-    override suspend fun addNewTest(username: String, password: String): Test? = DatabaseFactory.dbQuery {
-        val insertStatement = Tests.insert {
-            it[Tests.username] = username
-            it[Tests.password] = password
+    override suspend fun addNewUser(email: String, username: String, password: String): Test? = DatabaseFactory.dbQuery {
+        val insertStatement = BaseForUsers.insert {
+            it[BaseForUsers.email] = email
+            it[BaseForUsers.username] = username
+            it[BaseForUsers.password] = password
         }
         insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToTest)
     }
 
-    override suspend fun editTest(id: Int, username: String, password: String): Boolean = DatabaseFactory.dbQuery {
-        Tests.update({ Tests.id eq id }) {
-            it[Tests.username] = username
-            it[Tests.password] = password
+    override suspend fun editUser(email : String, username: String, password: String): Boolean = DatabaseFactory.dbQuery {
+        BaseForUsers.update({ BaseForUsers.username eq username }) {
+            it[BaseForUsers.username] = username
+            it[BaseForUsers.password] = password
         } > 0
     }
 
-    override suspend fun deleteTest(id: Int): Boolean = DatabaseFactory.dbQuery {
-        Tests.deleteWhere { Tests.id eq id } > 0
+    override suspend fun deleteUser(email: String): Boolean = DatabaseFactory.dbQuery {
+        BaseForUsers.deleteWhere { BaseForUsers.email eq email } > 0
     }
 }
 
 val my_queries: IDatabaseQueries = DatabaseQueries().apply {
     runBlocking {
-        if(allTests().isEmpty()) {
-            addNewTest("Im tired", "Need to implement docker...")
+        if(allUsers().isEmpty()) {
+            addNewUser("email@email", "testuser", "123")
         }
     }
 }

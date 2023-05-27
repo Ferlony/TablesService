@@ -1,20 +1,15 @@
 package com.tables.plugins
 
-import com.auth0.jwt.JWT
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.config.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.util.*
+import io.ktor.server.request.*
+import io.ktor.server.routing.get
+import kotlinx.serialization.*
 
-
-//var users = ArrayList<User>()
 
 fun Application.configureRouting() {
     routing {
@@ -22,83 +17,114 @@ fun Application.configureRouting() {
             call.respondRedirect("/login", false)
         }
 
-        post("/register"){
-            val logReq = call.receive<User>();
-            // check, have sql table this user
-            if(call.parameters.getOrFail<String>(logReq.username).isNotEmpty()
-                && my_queries.test(call.parameters.getOrFail<Int>("id"))!=null){
-                call.respondRedirect("/login", false); // ?????? mb cringe
-                call.respond(HttpStatusCode(505, "LOL"), "This user was registered")
+        route("/register"){
+            get{
+                call.respond(HttpStatusCode.OK, "Success")
             }
-            val article = my_queries.addNewTest(logReq.username, logReq.password)
-            call.respondRedirect("/profile/${article?.id}", true)
-            //call.respond(HttpStatusCode.Created, "Success")
-        }
-
-        get("/login"){
-            val logReq = call.receive<User>();
-            val token = JWT.create() // maybe
-            if(call.parameters.getOrFail<String>(logReq.username).isNotEmpty()){
-                call.respond(hashMapOf("token" to token))
-                //call.respondRedirect("/profile/${logReq.id}", true);
-            }
-            else{
-                call.respondRedirect("/register", false);
+            post{
+                val logReq = call.receive<User>()
+                if(my_queries.findByName(logReq.username) !=null){
+                    call.respond(HttpStatusCode(505, "LOL"), "This user was registered")
+                } // didn't work
+                my_queries.addNewUser(logReq.email, logReq.username, logReq.password)
+                call.respondText(JWTConfig.makeToken(logReq))
             }
         }
+        route("login"){
+            get{
+                call.respond(HttpStatusCode.OK, "Success")
+            }
 
-        ///
-        authenticate() {//cringe
-            get("/profile") {
+            post{
+                val logReq = call.receive<User>();
+                val token = JWTConfig.makeToken(logReq) // create new token for user.
+                println(my_queries.findByName(logReq.username))
+                if(my_queries.findByName(logReq.username) == null){
+                    call.respond(HttpStatusCode(505, "LOL"), "This user does not exist")
+                }
+                call.respond(HttpStatusCode.OK, "user: ${logReq}, JWT:${token}")
+            }
+        }
+
+        authenticate{
+
+            get("/home"){
+                val user = call.principal<JWTPrincipal>()
+                val username = user!!.payload.getClaim("username").asString()
+                call.respond(HttpStatusCode.OK, "home for: $username")
+            }
+
+            get("/profile"){
+                val user = call.principal<JWTPrincipal>()
+                val username = user!!.payload.getClaim("username").asString()
+                val email = user.payload.getClaim("email").asString()
+                val password = user.payload.getClaim("password").asString()
+                call.respond(HttpStatusCode.OK, "profile:\n $username \n $email \n $password")
+            }
+
+            get("/admin"){
+                val principal = call.principal<JWTPrincipal>()
+                val name = principal!!.payload.getClaim("username").asString()
+                val admin = my_queries.findByName(name)
+                if (admin!= null) call.respond(HttpStatusCode.OK,"admin:\n ${admin.email} \n ${admin.username}")
+                // cringe without security
+            }
+
+            get("/mod"){
+                val principal = call.principal<JWTPrincipal>()
+                val name = principal!!.payload.getClaim("username").asString()
+                val mod = my_queries.findByName(name)
+                if (mod!= null) call.respond(HttpStatusCode.OK,"admin:\n ${mod.email} \n ${mod.username}")
+            }
+
+            get("/user"){
                 val principal = call.principal<JWTPrincipal>()
                 val username = principal!!.payload.getClaim("username").asString()
-                val expiresAt = principal.expiresAt?.time?.minus(System.currentTimeMillis())
-                call.respond(HttpStatusCode.OK, "success")
+                val user = my_queries.findByName(username)
+                if(user!=null) call.respond(HttpStatusCode.OK, "user:\n ${user.username} \n ${user.email}")
             }
-        }
-        ///
 
-        route("/profile"){
-            get("{id}") {
-                val id = call.parameters.getOrFail<Int>("id").toInt() // cringe
-                val user = my_queries.test(id)
-                if (user != null) {
-                    call.respond(HttpStatusCode.OK, user)
-                } // cringe
-                // TODO
-            }
         }
-
-        get("/admin"){
-            //TODO
-        }
-
-        get("/mod"){
-            //TODO
-        }
-        get("/user/{id}"){
-            val user = my_queries.test(call.parameters.getOrFail<Int>("id").toInt())
-            if(user!= null){
-                call.respond(HttpStatusCode.Accepted, user)
-            }
-            else {
-                call.respond(HttpStatusCode.BadRequest, "This user is not exist")
-            }
-            // maybe not cringe
-        }
-
 
     }
 }
 
-
+@Serializable
 data class User(
+    val email: String,
     val username: String,
-    val password: String,
-    val id : Int
-)
+    val password: String
+): Principal
 
-data class Response(
-    val ok: Boolean,
-    val message: String
-)
+/*
+* POST http://localhost:8080/register
+* JSON Body:
+*{
+*   "email":"pisya@popa",
+*   "username": "waka",
+*   "password": "boba1"
+* output: *JWT token*
+*} */
+
+/*
+* POST http://localhost:8080/login
+* JSON Body:
+*{
+*   "email":"pisya@popa",
+*   "username": "waka",
+*   "password": "boba1"
+*}
+* output: "user: *user*, JWT:*token*"
+*  */
+
+/*
+* GET for  http://localhost:8080/home or /profile or /admin or /mod or /user
+* Authorization: Bearer {{auth_token}}
+* output for /profile or /admin or /mod or /user: *data depending on the location *
+* */
+
+/*
+* GET http://localhost:8080/profile
+* Authorization: Bearer {{auth_token}}
+* output: *data of user*
+* */

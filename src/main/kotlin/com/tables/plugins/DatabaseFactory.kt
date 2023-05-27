@@ -10,11 +10,11 @@ import org.jetbrains.exposed.sql.transactions.experimental.*
 object DatabaseFactory {
     fun init(){
         val testDB = Database.connect(
-            "jdbc:sqlite:src/main/kotlin/com/tables/db/test.sqlite3", driver = "org.sqlite.JDBC",
+            "jdbc:sqlite:src/main/kotlin/com/tables/db/database.sqlite3", driver = "org.sqlite.JDBC",
             user = "admin", password = "secret")
         transaction(testDB) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Tests)
+            SchemaUtils.create(BaseForUsers)
             //commit() do stuff what?
             //Do stuff
         }
@@ -25,13 +25,14 @@ object DatabaseFactory {
 }
 
 
-data class Test(val id: Int, val username: String, val password: String)
+data class Test(val email: String, val username: String, val password: String)
 
-object Tests : Table() {
+object BaseForUsers : Table() {
     // fields of table: id title and body?
-    val id = integer("id").autoIncrement()
-    val username = varchar("title", 128)
-    val password = varchar("body", 1024)
+    //val id = integer("id").autoIncrement()
+    val email = varchar("email", 1024)
+    val username = varchar("username", 128)
+    val password = varchar("password", 1024)
 
-    override val primaryKey = PrimaryKey(id)
+    //override val primaryKey = PrimaryKey(id)
 }

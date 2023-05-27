@@ -1,9 +1,11 @@
 package com.tables.plugins
 
 interface IDatabaseQueries {
-    suspend fun allTests(): List<Test>
-    suspend fun test(id: Int): Test?
-    suspend fun addNewTest(title: String, body: String): Test?
-    suspend fun editTest(id: Int, title: String, body: String): Boolean
-    suspend fun deleteTest(id: Int): Boolean
+    suspend fun allUsers(): List<Test>
+    //suspend fun findById(id: Int): Test?
+    suspend fun findByName(name: String): Test?
+    suspend fun addNewUser(email: String,title: String, body: String): Test?
+    suspend fun editUser(email: String, title: String, body: String): Boolean
+    suspend fun deleteUser(email: String): Boolean
+
 }

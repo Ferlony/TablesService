@@ -1,4 +1,4 @@
-package com.tables.plugins
+package com.tables.plugins.database.client
 
 import kotlinx.coroutines.*
 import org.jetbrains.exposed.sql.*
@@ -15,8 +15,6 @@ object DatabaseFactory {
         transaction(testDB) {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(BaseForUsers)
-            //commit() do stuff what?
-            //Do stuff
         }
     }
 

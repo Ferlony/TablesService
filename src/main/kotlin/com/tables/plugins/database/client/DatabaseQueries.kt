@@ -1,4 +1,4 @@
-package com.tables.plugins
+package com.tables.plugins.database.client
 
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*

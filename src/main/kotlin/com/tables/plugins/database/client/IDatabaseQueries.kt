@@ -1,4 +1,6 @@
-package com.tables.plugins
+package com.tables.plugins.database.client
+
+import com.tables.plugins.database.client.Test
 
 interface IDatabaseQueries {
     suspend fun allUsers(): List<Test>

@@ -1,5 +1,7 @@
 package com.tables.plugins
 
+import com.tables.plugins.database.client.my_queries
+import com.tables.plugins.database.table.table_queres
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
@@ -79,7 +81,34 @@ fun Application.configureRouting() {
                 val name = principal!!.payload.getClaim("username").asString()
                 val admin = my_queries.findByName(name)
                 if (admin!= null) call.respond(HttpStatusCode.OK,"admin:\n ${admin.email} \n ${admin.username}")
+                else call.respond(HttpStatusCode.Locked)
                 // cringe without security
+            }
+
+            get("/admin/tables"){
+                val principal = call.principal<JWTPrincipal>()
+                val name = principal!!.payload.getClaim("username").asString()
+                val admin = my_queries.findByName(name)
+                if (admin!= null) {
+                    call.respond(HttpStatusCode.OK,table_queres.allTables())
+                }
+                else call.respond(HttpStatusCode.Locked)
+            }
+
+            post("/admin/table"){
+                ////////////////////////////////////////////////////////
+                val table = call.receive<TableWithMarks>()
+
+                val principal = call.principal<JWTPrincipal>()
+                val name = principal!!.payload.getClaim("username").asString()
+                val admin = my_queries.findByName(name)
+                table_queres.addNewTable(table.id, table.topic, table.description, table.userstatus, table.checked, table.tabletittle)
+
+                if (admin!= null) {
+                    call.respond(HttpStatusCode.OK,"This table was written!")
+                }
+
+                else call.respond(HttpStatusCode.Locked)
             }
 
             get("/mod"){
@@ -123,6 +152,15 @@ data class UserRespond(
     val id: String,
     val email: String,
     val role: String
+): Principal
+
+data class TableWithMarks(
+    val  id: String,
+    val topic: String,
+    val description: String,
+    val userstatus: String,
+    val checked: String,
+    val tabletittle: String
 ): Principal
 
 

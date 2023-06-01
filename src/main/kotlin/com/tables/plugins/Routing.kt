@@ -9,6 +9,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.get
 import kotlinx.serialization.*
+import kotlinx.serialization.json.Json
 
 
 fun Application.configureRouting() {
@@ -22,12 +23,16 @@ fun Application.configureRouting() {
                 call.respond(HttpStatusCode.OK, "Success")
             }
             post{
-                val logReq = call.receive<User>()
+                val logReq = call.receive<UserRegister>()
                 if(my_queries.findByName(logReq.username) !=null){
-                    call.respond(HttpStatusCode(505, "LOL"), "This user was registered")
+                    call.respond(HttpStatusCode(505, ""), "This user was registered")
                 } // didn't work
-                my_queries.addNewUser(logReq.email, logReq.username, logReq.password)
-                call.respondText(JWTConfig.makeToken(logReq))
+                my_queries.addNewUser(logReq.email, logReq.username, logReq.password, logReq.role)
+//                call.respondText(JWTConfig.makeToken(logReq))
+                val jwt = JWTConfig.makeToken(logReq)
+//                call.respond(HttpStatusCode(200, "OK"), "Success")
+                val json = Json.encodeToString(UserRespond(logReq.username, jwt, "0", logReq.email, logReq.role))
+                call.respond(json)
             }
         }
         route("login"){
@@ -36,13 +41,20 @@ fun Application.configureRouting() {
             }
 
             post{
-                val logReq = call.receive<User>();
-                val token = JWTConfig.makeToken(logReq) // create new token for user.
-                println(my_queries.findByName(logReq.username))
-                if(my_queries.findByName(logReq.username) == null){
-                    call.respond(HttpStatusCode(505, "LOL"), "This user does not exist")
+                val logReq = call.receive<UserLogin>();
+//                val token = JWTConfig.makeToken(logReq) // create new token for user.
+                val user = my_queries.findByName(logReq.username)
+                if(user == null){
+                    call.respond(HttpStatusCode(505, ""), "This user does not exist")
                 }
-                call.respond(HttpStatusCode.OK, "user: ${logReq}, JWT:${token}")
+                val userClass: UserRegister = UserRegister(user!!.username, user.email, user.password,  user.role)
+
+//                val json = Json.encodeToString(UserRegister(user.username, user.email, user.password, user.role))
+                val jwt = JWTConfig.makeToken(userClass)
+                val json = Json.encodeToString(UserRespond(userClass.username, jwt, "0", userClass.email, userClass.role))
+
+//                call.respond(HttpStatusCode.OK, "user: ${logReq}, JWT:${token}")
+                call.respond(json)
             }
         }
 
@@ -90,32 +102,29 @@ fun Application.configureRouting() {
 }
 
 @Serializable
-data class User(
+data class UserRegister(
+    val username: String,
     val email: String,
+    val password: String,
+    val role: String = "user"
+): Principal
+
+
+@Serializable
+data class UserLogin(
     val username: String,
     val password: String
 ): Principal
 
-/*
-* POST http://localhost:8080/register
-* JSON Body:
-*{
-*   "email":"pisya@popa",
-*   "username": "waka",
-*   "password": "boba1"
-* output: *JWT token*
-*} */
+@Serializable
+data class UserRespond(
+    val username: String,
+    val accessToken: String,
+    val id: String,
+    val email: String,
+    val role: String
+): Principal
 
-/*
-* POST http://localhost:8080/login
-* JSON Body:
-*{
-*   "email":"pisya@popa",
-*   "username": "waka",
-*   "password": "boba1"
-*}
-* output: "user: *user*, JWT:*token*"
-*  */
 
 /*
 * GET for  http://localhost:8080/home or /profile or /admin or /mod or /user

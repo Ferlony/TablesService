@@ -38,7 +38,7 @@ export default {
     }
     catch (e) {
       console.log(e);
-      this.content = "Authtorize to view conntent";
+      this.content = e;
     }
   },
 };

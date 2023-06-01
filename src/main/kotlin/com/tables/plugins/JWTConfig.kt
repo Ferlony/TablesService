@@ -18,12 +18,13 @@ object JWTConfig {
         .withAudience(audience)
         .build()
 
-    fun makeToken(user: User): String = JWT
+    fun makeToken(user: UserRegister): String = JWT
         .create()
         .withIssuer(issuer)
         .withClaim("email", user.email)
         .withClaim("username", user.username)
         .withClaim("password", user.password)
+        .withClaim("role", user.role)
         .withAudience(audience)
         .sign(algorithm)
 }

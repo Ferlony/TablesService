@@ -32,12 +32,15 @@
         </div>
       </Form>
 
-      <div
+      <!-- <div
         v-if="message"
         class="alert"
         :class="successful ? 'alert-success' : 'alert-danger'"
       >
         {{ message }}
+      </div> -->
+      <div v-if="successful" class="align-center">
+        <h1>User Added</h1>
       </div>
     </div>
   </div>
@@ -69,7 +72,7 @@ export default {
       password: yup
         .string()
         .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
+        .min(4, "Must be at least 4 characters!")
         .max(40, "Must be maximum 40 characters!"),
     });
 
@@ -117,3 +120,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.align-center{
+  text-align: center;
+}
+</style>

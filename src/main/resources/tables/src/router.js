@@ -7,18 +7,22 @@ const Profile = () => import("./components/Profile.vue")
 const BoardAdmin = () => import("./components/BoardAdmin.vue")
 const BoardModerator = () => import("./components/BoardModerator.vue")
 const BoardUser = () => import("./components/BoardUser.vue")
-
+const HomePlace = () => Home
 const ExcelMain = () => import("./components/ExcelWorker/main.js")
 
 const routes = [
   {
+    path: "",
+    component: HomePlace,
+  },
+  {
     path: "/",
     name: "home",
-    component: Home,
+    component: HomePlace,
   },
   {
     path: "/home",
-    component: Home,
+    component: HomePlace,
   },
   {
     path: "/login",
@@ -67,16 +71,16 @@ const router = createRouter({
 export default router;
 
 
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ['/login', '/register', '/home', '/'];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem('user');
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/register', '/home', '/'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem('user');
 
-//   // trying to access a restricted page + not logged in
-//   // redirect to login page
-//   if (authRequired && !loggedIn) {
-//     next('/login');
-//   } else {
-//     next();
-//   }
-// });
+  // trying to access a restricted page + not logged in
+  // redirect to login page
+  if (authRequired && !loggedIn) {
+    next('/login');
+  } else {
+    next();
+  }
+});

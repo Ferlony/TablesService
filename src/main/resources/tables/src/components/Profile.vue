@@ -19,7 +19,7 @@
     </p>
     <strong>Authorities:</strong>
     <ul>
-      <li v-for="role in currentUser.roles" :key="role">{{role}}</li>
+      <li v-for="r in currentUser.role" :key="r">{{r}}</li>
     </ul>
   </div>
 </template>

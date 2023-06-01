@@ -60,7 +60,8 @@
         <b>(visible for admin only)</b><br>
         <b>Import Excel File:</b>
         <div>
-          <input v-if="checkAdmin" type="file" class="fileSelect" @change='fileChange($event)' />
+          <!-- <input v-if="checkAdmin" type="file" class="fileSelect" @change='fileChange($event)' /> -->
+          <input type="file" class="fileSelect" @change='fileChange($event)' />
         </div>
       </div>
     </div>
@@ -124,7 +125,7 @@ export default {
     var currentTitle = this.tableData[0].tabletitle;
     return {
       tableTitle: currentTitle,
-      sheetName: 'Sales Data',
+      sheetName: 'TablesData',
       hostClass: 'spreadsheet',
       autoGenerateColumns: true,
       width: 200,
@@ -179,8 +180,8 @@ export default {
     //   return this.$store.state.auth.user;
     // },
     checkAdmin() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.authUserRole['roles'].includes('ROLE_ADMIN');
+      if (this.currentUser && this.currentUser['role']) {
+        return this.authUserRole['role'].includes('admin');
       }
 
       return false;

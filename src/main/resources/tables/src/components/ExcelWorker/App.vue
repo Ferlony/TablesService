@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard.vue'
 
 export default {
   name: 'ExcelApp',
+  
   components: {
     Dashboard
   }

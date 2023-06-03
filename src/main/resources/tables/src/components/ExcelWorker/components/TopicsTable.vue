@@ -60,8 +60,8 @@
         <b>(visible for admin only)</b><br>
         <b>Import Excel File:</b>
         <div>
-          <!-- <input v-if="checkAdmin" type="file" class="fileSelect" @change='fileChange($event)' /> -->
-          <input type="file" class="fileSelect" @change='fileChange($event)' />
+          <input v-if="checkAdmin" type="file" class="fileSelect" @change='fileChange($event)' />
+          <!-- <input type="file" class="fileSelect" @change='fileChange($event)' /> -->
         </div>
       </div>
     </div>
@@ -84,12 +84,12 @@
           <td>{{ item.id }}</td>
           <td>{{ item.topic }}</td>
           <td>{{ item.description }}</td>
-
+<!-- 
           <td>{{ item.user }}</td>
           <td>{{ item.userstatus }}</td>
-          <td>{{ item.checked }}</td>
+          <td>{{ item.checked }}</td> -->
           
-          <!-- <td><textarea v-model="item.user"></textarea></td>
+          <td><textarea v-model="item.user"></textarea></td>
           <td>
             <span>{{ item.userstatus }}&nbsp;&nbsp;</span>
             <input type="checkbox" v-model="item.userstatus" 
@@ -101,7 +101,7 @@
             <input v-if="checkAdmin" type="checkbox" v-model="item.checked" 
             true-value="Yes" 
             false-value="No">
-          </td> -->
+          </td>
         </tr>
       </tbody>
     </table>
@@ -143,7 +143,7 @@ export default {
       if (this._spread) {
         const fileDom = e.target || e.srcElement;
         const excelIO = new Excel.IO();
-        //const spread = this._spread;
+        // const spread = this._spread;
         const store = this.$store;
 
         /*const deserializationOptions = {
@@ -161,7 +161,7 @@ export default {
       const spread = this._spread;
       const fileName = "TablesData.xlsx";
 
-      //const sheet = spread.getSheet(0);
+      // const sheet = spread.getSheet(0);
       const excelIO = new Excel.IO();
       const json = JSON.stringify(spread.toJSON({
         includeBindingSource: true,
@@ -176,15 +176,15 @@ export default {
     }
   },
   computed: {
-    // currentUser(){
-    //   return this.$store.state.auth.user;
-    // },
+    currentUser(){
+      return this.$store.state.auth.user;
+    },
     checkAdmin() {
       if (this.currentUser && this.currentUser['role']) {
-        return this.authUserRole['role'].includes('admin');
+        return this.currentUser['role'].includes('admin');
       }
 
-      return false;
+      return true;
     },
   },
 };

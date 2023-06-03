@@ -15,7 +15,7 @@ export default {
   components: { NavBar, TopicsTable},
   computed: {
     topicsTableData() {
-      return this.$store.state.recentTopics;
+      return this.$store.state.tables.recentTopics;
     },
   }
 };

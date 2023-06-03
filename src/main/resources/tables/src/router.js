@@ -8,7 +8,7 @@ const BoardAdmin = () => import("./components/BoardAdmin.vue")
 const BoardModerator = () => import("./components/BoardModerator.vue")
 const BoardUser = () => import("./components/BoardUser.vue")
 const HomePlace = () => Home
-const ExcelMain = () => import("./components/ExcelWorker/main.js")
+const ExcelMain = () => import("./components/ExcelWorker/App.vue")
 
 const routes = [
   {

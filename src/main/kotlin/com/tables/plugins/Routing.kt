@@ -130,40 +130,6 @@ fun Application.configureRouting() {
     }
 }
 
-@Serializable
-data class UserRegister(
-    val username: String,
-    val email: String,
-    val password: String,
-    val role: String = "user"
-): Principal
-
-
-@Serializable
-data class UserLogin(
-    val username: String,
-    val password: String
-): Principal
-
-@Serializable
-data class UserRespond(
-    val username: String,
-    val accessToken: String,
-    val id: String,
-    val email: String,
-    val role: String
-): Principal
-
-data class TableWithMarks(
-    val  id: String,
-    val topic: String,
-    val description: String,
-    val userstatus: String,
-    val checked: String,
-    val tabletittle: String
-): Principal
-
-
 /*
 * GET for  http://localhost:8080/home or /profile or /admin or /mod or /user
 * Authorization: Bearer {{auth_token}}

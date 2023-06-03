@@ -29,11 +29,11 @@ fun Application.configureRouting() {
                 if(my_queries.findByName(logReq.username) !=null){
                     call.respond(HttpStatusCode(505, ""), "This user was registered")
                 } // didn't work
-                my_queries.addNewUser(logReq.email, logReq.username, logReq.password, logReq.role)
+                my_queries.addNewUser(logReq.email, logReq.username, logReq.password, logReq.role, logReq.table[0])
 //                call.respondText(JWTConfig.makeToken(logReq))
                 val jwt = JWTConfig.makeToken(logReq)
 //                call.respond(HttpStatusCode(200, "OK"), "Success")
-                val json = Json.encodeToString(UserRespond(logReq.username, jwt, "0", logReq.email, logReq.role))
+                val json = Json.encodeToString(UserRespond(logReq.username, jwt, logReq.email, logReq.role, logReq.table))
                 call.respond(json)
             }
         }
@@ -49,11 +49,11 @@ fun Application.configureRouting() {
                 if(user == null){
                     call.respond(HttpStatusCode(505, ""), "This user does not exist")
                 }
-                val userClass: UserRegister = UserRegister(user!!.username, user.email, user.password,  user.role)
+                val userResp: UserRegister = UserRegister(user!!.username, user.email, user.password,  user.role, listOf(user.table))
 
 //                val json = Json.encodeToString(UserRegister(user.username, user.email, user.password, user.role))
-                val jwt = JWTConfig.makeToken(userClass)
-                val json = Json.encodeToString(UserRespond(userClass.username, jwt, "0", userClass.email, userClass.role))
+                val jwt = JWTConfig.makeToken(userResp)
+                val json = Json.encodeToString(UserRespond(userResp.username, jwt, userResp.email, userResp.role, userResp.table))
 
 //                call.respond(HttpStatusCode.OK, "user: ${logReq}, JWT:${token}")
                 call.respond(json)

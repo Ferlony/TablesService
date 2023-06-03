@@ -26,7 +26,7 @@ object DatabaseFactory {
 }
 
 
-data class Test(val username: String, val email: String, val password: String, val role: String)
+data class Test(val username: String, val email: String, val password: String, val role: String, val table: String)
 
 object UsersDB : Table() {
     // fields of table: id title and body?
@@ -35,6 +35,7 @@ object UsersDB : Table() {
     val email = varchar("email", 1024)
     val password = varchar("password", 1024)
     val role = varchar("role", 128)
+    val table = varchar("table", 1024)
 
     //override val primaryKey = PrimaryKey(id)
 }

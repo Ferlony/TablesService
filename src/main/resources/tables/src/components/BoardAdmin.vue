@@ -10,14 +10,14 @@
 import UserService from "../services/user.service";
 
 export default {
-  name: "User",
+  name: "Admin",
   data() {
     return {
       content: "",
     };
   },
   mounted() {
-    UserService.getUserBoard().then(
+    UserService.getAdminBoard().then(
       (response) => {
         this.content = response.data;
       },

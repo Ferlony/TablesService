@@ -9,7 +9,8 @@ data class UserRegister(
     val username: String,
     val email: String,
     val password: String,
-    val role: String = "user"
+    val role: String = "user",
+    val table: List<String> = listOf("none")
 ): Principal
 
 
@@ -23,9 +24,9 @@ data class UserLogin(
 data class UserRespond(
     val username: String,
     val accessToken: String,
-    val id: String,
     val email: String,
-    val role: String
+    val role: String,
+    val table: List<String>
 ): Principal
 
 data class TableWithMarks(
@@ -36,4 +37,3 @@ data class TableWithMarks(
     val checked: String,
     val tabletittle: String
 ): Principal
-

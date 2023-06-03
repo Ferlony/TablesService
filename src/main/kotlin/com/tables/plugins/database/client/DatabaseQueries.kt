@@ -9,7 +9,8 @@ class DatabaseQueries : IDatabaseQueries {
         email = row[UsersDB.email],
         username = row[UsersDB.username],
         password = row[UsersDB.password],
-        role = row[UsersDB.role]
+        role = row[UsersDB.role],
+        table = row[UsersDB.table]
     )
 
     override suspend fun allUsers(): List<Test> = DatabaseFactory.dbQuery {
@@ -30,12 +31,13 @@ class DatabaseQueries : IDatabaseQueries {
             .singleOrNull()
     }
 
-    override suspend fun addNewUser(email: String, username: String, password: String, role: String): Test? = DatabaseFactory.dbQuery {
+    override suspend fun addNewUser(email: String, username: String, password: String, role: String, table: String): Test? = DatabaseFactory.dbQuery {
         val insertStatement = UsersDB.insert {
             it[UsersDB.email] = email
             it[UsersDB.username] = username
             it[UsersDB.password] = password
             it[UsersDB.role] = role
+            it[UsersDB.table] = table
         }
         insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToTest)
     }
@@ -55,7 +57,7 @@ class DatabaseQueries : IDatabaseQueries {
 val my_queries: IDatabaseQueries = DatabaseQueries().apply {
     runBlocking {
         if(allUsers().isEmpty()) {
-            addNewUser("admin@gmail.com", "root", "superadmin", "admin")
+            addNewUser("admin@gmail.com", "admin", "admin", "admin", "all")
         }
     }
 }

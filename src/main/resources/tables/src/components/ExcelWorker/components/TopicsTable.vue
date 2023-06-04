@@ -1,73 +1,7 @@
 <template>
   <TablePanel :key="chartKey" v-bind:title="tableTitle">
-    <gc-spread-sheets :hostClass='hostClass' @workbookInitialized='workbookInit'>
-      <gc-worksheet :dataSource='tableData' :name="sheetName" :autoGenerateColumns='autoGenerateColumns'>
-        <gc-column
-            :width='50'
-            :dataField="'id'"
-            :headerText="'ID'"
-            :visible = 'visible'
-            :resizable = 'resizable'
-          ></gc-column>
-        <gc-column
-            :width='200'
-            :dataField="'topic'"
-            :headerText="'Topic'"
-            :visible = 'visible'
-            :resizable = 'resizable'
-          ></gc-column>
-        <gc-column
-            :width="320"
-            :dataField="'description'"
-            :headerText="'Description'"
-            :visible = 'visible'
-            :resizable = 'resizable'
-          ></gc-column>
-        <gc-column
-            :width="100"
-            :dataField="'user'"
-            :headerText="'User'"
-            :visible = 'visible'
-            :formatter = 'priceFormatter'
-            :resizable = 'resizable'
-          ></gc-column>
-          <gc-column
-            :width="100"
-            :dataField="'userstatus'"
-            :headerText="'Userstatus'"
-            :visible = 'visible'
-            :resizable = 'resizable'
-          ></gc-column>
-          <gc-column
-            :width="100"
-            :dataField="'checked'"
-            :headerText="'Checked'"
-            :visible = 'visible'
-            :resizable = 'resizable'
-          ></gc-column>
-          <!-- <gc-column
-            :width="100"
-            :dataField="'tabletitle'"
-            :headerText="'Tabletitle'"
-            :visible = 'visible'
-            :resizable = 'resizable'
-          ></gc-column> -->
-      </gc-worksheet>
-    </gc-spread-sheets>
-    <div class="dashboardRow">
-      <button class="btn btn-primary dashboardButton" @click="exportSheet">Export to Excel</button>
-      <div>
-        <b>(visible for admin only)</b><br>
-        <b>Import Excel File:</b>
-        <div>
-          <input v-if="checkAdmin" type="file" class="fileSelect" @change='fileChange($event)' />
-          <!-- <input type="file" class="fileSelect" @change='fileChange($event)' /> -->
-        </div>
-      </div>
-    </div>
-  <!-- </TablePanel> -->
-
-  <!-- <TablePanel v-bind:title="tableTitle"> -->
+    <button @click="exportData">Download table</button>
+    <button v-if="checkAdmin" @click="saveToDB">Save to DB</button>
     <table class="table">
       <thead>
         <tr>
@@ -111,12 +45,8 @@
 <script>
 import TablePanel from "./TablePanel";
 
-import "@grapecity/spread-sheets/styles/gc.spread.sheets.excel2016colorful.css";
-// SpreadJS imports
-import "@grapecity/spread-sheets-vue";
-import Excel from "@grapecity/spread-excelio";
-import { saveAs } from 'file-saver';
-import { extractSheetData } from "../util/util";
+import { excelParser } from "../util/exportExcel";
+
 
 export default {
   components: { TablePanel },
@@ -125,55 +55,13 @@ export default {
     var currentTitle = this.tableData[0].tabletitle;
     return {
       tableTitle: currentTitle,
-      sheetName: 'TablesData',
-      hostClass: 'spreadsheet',
-      autoGenerateColumns: true,
-      width: 200,
-      visible: true,
-      resizable: true,
-      priceFormatter: "$ #.00",
-      chartKey: 1
     };
   },
-  methods: {
-    workbookInit: function (spread) {
-      this._spread = spread;
+  methods:{
+    exportData(){
+      var listData = this.tableData
+      excelParser().exportDataFromJSON(listData, null, null);
     },
-    fileChange: function (e) {
-      if (this._spread) {
-        const fileDom = e.target || e.srcElement;
-        const excelIO = new Excel.IO();
-        // const spread = this._spread;
-        const store = this.$store;
-
-        /*const deserializationOptions = {
-          frozenRowsAsColumnHeaders: true
-        };*/
-
-        excelIO.open(fileDom.files[0], (data) => {
-          console.dir(extractSheetData(data));
-          const newTablesData = extractSheetData(data);
-          store.commit('updaterecentTopics', newTablesData)
-        });
-      }
-    },
-    exportSheet: function () {
-      const spread = this._spread;
-      const fileName = "TablesData.xlsx";
-
-      // const sheet = spread.getSheet(0);
-      const excelIO = new Excel.IO();
-      const json = JSON.stringify(spread.toJSON({
-        includeBindingSource: true,
-        columnHeadersAsFrozenRows: true,
-      }));
-
-      excelIO.save(json, (blob) => {
-        saveAs(blob, fileName);
-      }, function (e) {
-        alert(e);
-      });
-    }
   },
   computed: {
     currentUser(){

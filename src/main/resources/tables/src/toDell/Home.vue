@@ -26,19 +26,20 @@ export default {
           this.content = response.data;
         },
         (error) => {
-          this.content =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
+          this.content = ""
+            // (error.response &&
+            //   error.response.data &&
+            //   error.response.data.message) ||
+            // error.message ||
+            // error.toString();
+            console.log(error);
 
         }
       );
     }
     catch (e) {
       console.log(e);
-      this.content = e;
+      this.content = "";
     }
   },
 };

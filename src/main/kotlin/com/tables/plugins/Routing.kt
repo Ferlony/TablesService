@@ -60,13 +60,33 @@ fun Application.configureRouting() {
             }
         }
 
+        route("home"){
+            get{
+                val column1: TableWithMarks = TableWithMarks("1", "Что то про C", "abooba", "Ryan Gosling", "Done", "Yes", "Class A")
+                val column2: TableWithMarks = TableWithMarks("2", "Что то про java", "abooba", "Pepe", "Prog", "No", "Class A")
+
+                val columnA1: TableWithMarks = TableWithMarks("1", "Что то про JABASCRIPT", "abooba", "Ryan Gosling", "Done", "Yes", "Class B")
+
+                val testJson: List<TableWithMarks> = listOf(column1, column2)
+
+                val json = Json.encodeToString(testJson)
+                call.respond(json)
+            }
+        }
+
+
         authenticate{
 
-            get("/home"){
-                val user = call.principal<JWTPrincipal>()
-                val username = user!!.payload.getClaim("username").asString()
-                call.respond(HttpStatusCode.OK, "home for: $username")
-            }
+//            get("/home"){
+//                val user = call.principal<JWTPrincipal>()
+//                val username = user!!.payload.getClaim("username").asString()
+////                call.respond(HttpStatusCode.OK, "home for: $username")
+//                val column1: TableWithMarks = TableWithMarks("1", "Что то про C", "abooba", "Ryan Gosling", "Done", "Yes", "Class A")
+//                val column2: TableWithMarks = TableWithMarks("2", "Что то про java", "abooba", "Pepe", "Prog", "No", "Class A")
+//                val testJson: List<TableWithMarks> = listOf(column1, column2)
+//                val json = Json.encodeToString(testJson)
+//                call.respond(json)
+//            }
 
             get("/profile"){
                 val user = call.principal<JWTPrincipal>()
@@ -102,7 +122,7 @@ fun Application.configureRouting() {
                 val principal = call.principal<JWTPrincipal>()
                 val name = principal!!.payload.getClaim("username").asString()
                 val admin = my_queries.findByName(name)
-                table_queres.addNewTable(table.id, table.topic, table.description, table.userstatus, table.checked, table.tabletittle)
+                table_queres.addNewTable(table.id, table.topic, table.description, table.userstatus, table.checked, table.tabletitle)
 
                 if (admin!= null) {
                     call.respond(HttpStatusCode.OK,"This table was written!")

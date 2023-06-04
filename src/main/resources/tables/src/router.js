@@ -1,28 +1,31 @@
 import { createWebHistory, createRouter } from "vue-router";
-import Home from "./components/Home.vue";
+// import Home from "./components/Home.vue";
 import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
 // lazy-loaded
 const Profile = () => import("./components/Profile.vue")
 const BoardAdmin = () => import("./components/BoardAdmin.vue")
-const BoardModerator = () => import("./components/BoardModerator.vue")
-const BoardUser = () => import("./components/BoardUser.vue")
-const HomePlace = () => Home
-const ExcelMain = () => import("./components/ExcelWorker/App.vue")
+// const BoardModerator = () => import("./components/BoardModerator.vue")
+// const BoardUser = () => import("./components/BoardUser.vue")
+// const HomePlace = () => Home
+const ExcelMain = () => import("./components/ExcelWorker/TablesApp.vue")
 
 const routes = [
   {
     path: "",
-    component: HomePlace,
+    // component: HomePlace,
+    component: ExcelMain,
   },
   {
     path: "/",
-    name: "home",
-    component: HomePlace,
+    // name: "home",
+    // component: HomePlace,
+    component: ExcelMain,
   },
   {
     path: "/home",
-    component: HomePlace,
+    // component: HomePlace,
+    component: ExcelMain,
   },
   {
     path: "/login",
@@ -44,23 +47,23 @@ const routes = [
     // lazy-loaded
     component: BoardAdmin,
   },
-  {
-    path: "/mod",
-    name: "moderator",
-    // lazy-loaded
-    component: BoardModerator,
-  },
-  {
-    path: "/user",
-    name: "user",
-    // lazy-loaded
-    component: BoardUser,
-  },
-  {
-    path: "/test",
-    name: "test",
-    component: ExcelMain
-  },
+  // {
+  //   path: "/mod",
+  //   name: "moderator",
+  //   // lazy-loaded
+  //   component: BoardModerator,
+  // },
+  // {
+  //   path: "/user",
+  //   name: "user",
+  //   // lazy-loaded
+  //   component: BoardUser,
+  // },
+  // {
+  //   path: "/test",
+  //   name: "test",
+  //   component: ExcelMain
+  // },
 ];
 
 const router = createRouter({

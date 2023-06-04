@@ -29,11 +29,13 @@ data class UserRespond(
     val table: List<String>
 ): Principal
 
+@Serializable
 data class TableWithMarks(
     val id: String,
     val topic: String,
     val description: String,
+    val user: String,
     val userstatus: String,
     val checked: String,
-    val tabletittle: String
+    val tabletitle: String
 ): Principal

@@ -13,8 +13,14 @@ export default {
   components: {
     Dashboard
   },
+  methods: {
+    currentNav(){
+      return this.$store.state.tables.navigation;
+    },
+  },
   mounted() {
-    UserService.getPublicContent().then(
+    // UserService.getPublicContent().then(
+    UserService.postPublicContent(this.currentNav()).then(
       (response) => {
         //this.$store.state.tables.recentTopics
         var result = JSON.stringify(response.data)

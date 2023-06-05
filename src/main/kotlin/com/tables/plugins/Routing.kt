@@ -16,14 +16,7 @@ import kotlinx.serialization.json.Json
 
 fun Application.configureRouting() {
     routing {
-        get("/") {
-            call.respondRedirect("/login", false)
-        }
-
         route("/register"){
-            get{
-                call.respond(HttpStatusCode.OK, "Success")
-            }
             post{
                 val logReq = call.receive<UserRegister>()
                 if(my_queries.findByName(logReq.username) !=null){
@@ -37,10 +30,7 @@ fun Application.configureRouting() {
                 call.respond(json)
             }
         }
-        route("login"){
-            get{
-                call.respond(HttpStatusCode.OK, "Success")
-            }
+        route("/login"){
 
             post{
                 val logReq = call.receive<UserLogin>();
@@ -60,23 +50,37 @@ fun Application.configureRouting() {
             }
         }
 
-        route("home"){
-            get{
+        route("/home"){
+            post{
                 val column1: TableWithMarks = TableWithMarks("1", "Что то про C", "abooba", "Ryan Gosling", "Done", "Yes", "Class A")
                 val column2: TableWithMarks = TableWithMarks("2", "Что то про java", "abooba", "Pepe", "Prog", "No", "Class A")
 
-                val columnA1: TableWithMarks = TableWithMarks("1", "Что то про JABASCRIPT", "abooba", "Ryan Gosling", "Done", "Yes", "Class B")
+                val table: List<TableWithMarks> = listOf(column1, column2)
 
-                val testJson: List<TableWithMarks> = listOf(column1, column2)
+                val testJson: List<TableWithMarks> = table
 
                 val json = Json.encodeToString(testJson)
                 call.respond(json)
             }
         }
 
+//        route("home"){
+//            get{
+//                val column1: TableWithMarks = TableWithMarks("1", "Что то про C", "abooba", "Ryan Gosling", "Done", "Yes", "Class A")
+//                val column2: TableWithMarks = TableWithMarks("2", "Что то про java", "abooba", "Pepe", "Prog", "No", "Class A")
+//
+//                val table: List<TableWithMarks> = listOf(column1, column2)
+//
+//                val testJson: List<TableWithMarks> = table
+//
+//                val json = Json.encodeToString(testJson)
+//                call.respond(json)
+//            }
+//        }
+
 
         authenticate{
-
+//==========================IMPORTANT=================
 //            get("/home"){
 //                val user = call.principal<JWTPrincipal>()
 //                val username = user!!.payload.getClaim("username").asString()
@@ -87,21 +91,26 @@ fun Application.configureRouting() {
 //                val json = Json.encodeToString(testJson)
 //                call.respond(json)
 //            }
+//-----------------------------------------------------
 
-            get("/profile"){
-                val user = call.principal<JWTPrincipal>()
-                val username = user!!.payload.getClaim("username").asString()
-                val email = user.payload.getClaim("email").asString()
-                val password = user.payload.getClaim("password").asString()
-                call.respond(HttpStatusCode.OK, "profile:\n $username \n $email \n $password")
-            }
+//            get("/profile"){
+//                val user = call.principal<JWTPrincipal>()
+//                val username = user!!.payload.getClaim("username").asString()
+//                val email = user.payload.getClaim("email").asString()
+//                val password = user.payload.getClaim("password").asString()
+//                call.respond(HttpStatusCode.OK, "profile:\n $username \n $email \n $password")
+//            }
+
 
             get("/admin"){
                 val principal = call.principal<JWTPrincipal>()
                 val name = principal!!.payload.getClaim("username").asString()
                 val admin = my_queries.findByName(name)
-                if (admin!= null) call.respond(HttpStatusCode.OK,"admin:\n ${admin.email} \n ${admin.username}")
-                else call.respond(HttpStatusCode.Locked)
+                if (admin!= null)
+                    call.respond(HttpStatusCode.OK,"admin:\n ${admin.email} \n ${admin.username}")
+                else
+                    call.respond(HttpStatusCode.Locked)
+
                 // cringe without security
             }
 
@@ -115,21 +124,21 @@ fun Application.configureRouting() {
                 else call.respond(HttpStatusCode.Locked)
             }
 
-            post("/admin/table"){
-                ////////////////////////////////////////////////////////
-                val table = call.receive<TableWithMarks>()
-
-                val principal = call.principal<JWTPrincipal>()
-                val name = principal!!.payload.getClaim("username").asString()
-                val admin = my_queries.findByName(name)
-                table_queres.addNewTable(table.id, table.topic, table.description, table.userstatus, table.checked, table.tabletitle)
-
-                if (admin!= null) {
-                    call.respond(HttpStatusCode.OK,"This table was written!")
-                }
-
-                else call.respond(HttpStatusCode.Locked)
-            }
+//            post("/admin/table"){
+//                ////////////////////////////////////////////////////////
+//                val table = call.receive<TableWithMarks>()
+//
+//                val principal = call.principal<JWTPrincipal>()
+//                val name = principal!!.payload.getClaim("username").asString()
+//                val admin = my_queries.findByName(name)
+//                table_queres.addNewTable(table.id, table.topic, table.description, table.userstatus, table.checked, table.tabletitle)
+//
+//                if (admin!= null) {
+//                    call.respond(HttpStatusCode.OK,"This table was written!")
+//                }
+//
+//                else call.respond(HttpStatusCode.Locked)
+//            }
 
             get("/mod"){
                 val principal = call.principal<JWTPrincipal>()
@@ -138,12 +147,12 @@ fun Application.configureRouting() {
                 if (mod!= null) call.respond(HttpStatusCode.OK,"admin:\n ${mod.email} \n ${mod.username}")
             }
 
-            get("/user"){
-                val principal = call.principal<JWTPrincipal>()
-                val username = principal!!.payload.getClaim("username").asString()
-                val user = my_queries.findByName(username)
-                if(user!=null) call.respond(HttpStatusCode.OK, "user:\n ${user.username} \n ${user.email}")
-            }
+//            get("/user"){
+//                val principal = call.principal<JWTPrincipal>()
+//                val username = principal!!.payload.getClaim("username").asString()
+//                val user = my_queries.findByName(username)
+//                if(user!=null) call.respond(HttpStatusCode.OK, "user:\n ${user.username} \n ${user.email}")
+//            }
 
         }
 

@@ -4,6 +4,7 @@
 // export const recentTopics = JSON.parse(result);
 
 export let recentTopics = ""
+export let navigation = ""
 
 
 // [

@@ -7,10 +7,10 @@
 </template>
 
 <script>
-import UserService from "../services/user.service";
+import UserService from "../services/auth-header";
 
 export default {
-  name: "User",
+  name: "Mod",
   data() {
     return {
       content: "",

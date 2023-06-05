@@ -4,8 +4,12 @@ import authHeader from './user.service';
 const API_URL = 'http://localhost:8080/';
 
 class UserService {
-  getPublicContent() {
-    return axios.get(API_URL + 'home', { headers: authHeader() });
+  // getPublicContent() {
+  //   return axios.get(API_URL + 'home', { headers: authHeader() });
+  // }
+
+  postPublicContent(data){
+    return axios.post(API_URL + 'home', {data, headers: authHeader()})
   }
 
   // getUserBoard() {

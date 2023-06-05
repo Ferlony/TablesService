@@ -22,10 +22,15 @@
     {{ currentUser.role }}
     </p>
 
-    <strong>Tables:</strong>
-    <ul>
-      <li v-for="each in currentUser.table" :key="each">{{ each }}</li>
-    </ul>
+    <!-- v-if="checkAdmin" -->
+    <div> 
+      <strong>Tables:</strong>
+      <ul>
+        <li v-for="each in currentUser.table" :key="each" class="nav-item">
+          <router-link to="/home" class="nav-link" @click="setNav(each)">{{ each }} </router-link>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -35,12 +40,26 @@ export default {
   computed: {
     currentUser() {
       return this.$store.state.auth.user;   
-    }
+    },
+    checkAdmin() {
+      if (this.currentUser && this.currentUser['role']) {
+        return this.currentUser['role'].includes('admin');
+      }
+      return true;
+    },
+    currentNav(){
+      return this.$store.state.tables.navigation;
+    },
   },
   mounted() {
     if (!this.currentUser) {
       this.$router.push('/login');
     }
+  },
+  methods: {
+    setNav(data){
+      this.$store.state.tables.navigation = data;
+    },
   }
 };
 </script>

@@ -90,7 +90,6 @@ export default {
         }
         catch(e){
           counter++;
-          continue;
         }
       }
       return "someTitle";

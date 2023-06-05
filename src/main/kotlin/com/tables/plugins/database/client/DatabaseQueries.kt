@@ -58,6 +58,7 @@ val my_queries: IDatabaseQueries = DatabaseQueries().apply {
     runBlocking {
         if(allUsers().isEmpty()) {
             addNewUser("admin@gmail.com", "admin", "admin", "admin", "all")
+            addNewUser("moderator@gmail.com", "moderator", "moderator", "mod", "all")
         }
     }
 }

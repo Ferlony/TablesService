@@ -10,7 +10,9 @@
   <div v-if="currentUser" class="center-screen">
     <TablePanel :key="chartKey" v-bind:title="fixCurrentTitle">
       <button @click="exportData">Download table</button>
-      <button v-if="checkAdmin" @click="saveToDB">Save to DB</button>
+      <!-- <button v-if="checkAdmin" @click="saveToDB">Save to DB</button> -->
+      <button @click="saveToDB">Save to DB</button>
+      <span><h3>{{ responseStatus }}</h3></span>
       <table class="table">
         <thead>
           <tr>
@@ -52,7 +54,7 @@
 import TablePanel from "./TablePanel";
 
 import { excelParser } from "../util/exportExcel";
-import UserService from "@/services/auth-header"
+import UserService from "../../../services/auth-header"
 
 
 export default {
@@ -69,6 +71,7 @@ export default {
     }
     return {
       tableTitle: currentTitle,
+      responseStatus: "",
     };
   },
   methods:{
@@ -79,7 +82,15 @@ export default {
     },
     saveToDB(){
       var json = JSON.stringify(this.tableData)
-      UserService.postTabletoBD(json)
+      UserService.postTableToBD(json).then(
+        (response) => {
+          this.responseStatus = response.data
+        },
+        (error) => {
+          console.log(error)
+          alert(error)
+        }
+      );
     },
     fixCurrentTitleMethod(){
       var counter = 0;

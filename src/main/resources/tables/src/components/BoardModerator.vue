@@ -1,8 +1,9 @@
 <template>
   <div class="container">
-    <header class>
-      <h3>{{ content }}</h3>
-    </header>
+    <div>
+      <h1>Users:</h1>
+      {{ content }}
+    </div>
   </div>
 </template>
 
@@ -17,7 +18,7 @@ export default {
     };
   },
   mounted() {
-    UserService.getUserBoard().then(
+    UserService.getModeratorBoard().then(
       (response) => {
         this.content = response.data;
       },

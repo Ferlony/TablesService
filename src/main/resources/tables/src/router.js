@@ -5,7 +5,7 @@ import Register from "./components/Register.vue";
 // lazy-loaded
 const Profile = () => import("./components/Profile.vue")
 const BoardAdmin = () => import("./components/BoardAdmin.vue")
-// const BoardModerator = () => import("./components/BoardModerator.vue")
+const BoardModerator = () => import("./components/BoardModerator.vue")
 // const BoardUser = () => import("./components/BoardUser.vue")
 // const HomePlace = () => Home
 const ExcelMain = () => import("./components/ExcelWorker/TablesApp.vue")
@@ -47,12 +47,12 @@ const routes = [
     // lazy-loaded
     component: BoardAdmin,
   },
-  // {
-  //   path: "/mod",
-  //   name: "moderator",
-  //   // lazy-loaded
-  //   component: BoardModerator,
-  // },
+  {
+    path: "/mod",
+    name: "moderator",
+    // lazy-loaded
+    component: BoardModerator,
+  },
   // {
   //   path: "/user",
   //   name: "user",

@@ -25,7 +25,7 @@ class UserService {
   }
 
   postTableToBD(data){
-    return axios.post(API_URL + 'savetable', {data});
+    return axios.post(API_URL + 'savetable', {data,  headers: authHeader()});
   }
 
   getTables(){
@@ -34,6 +34,10 @@ class UserService {
 
   getUsers(){
     return axios.get(API_URL + 'admin/users', {headers: authHeader()});
+  }
+
+  postChangeUserField(data){
+    return axios.post(API_URL + "admin/changeusers", {data})
   }
 }
 

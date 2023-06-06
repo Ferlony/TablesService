@@ -28,16 +28,20 @@ class UserService {
     return axios.post(API_URL + 'savetable', {data,  headers: authHeader()});
   }
 
-  getTables(){
-    return axios.get(API_URL + 'admin/tables', {headers: authHeader()});
-  }
+  // getTables(){
+  //   return axios.get(API_URL + 'admin/tables', {headers: authHeader()});
+  // }
 
-  getUsers(){
-    return axios.get(API_URL + 'admin/users', {headers: authHeader()});
-  }
+  // getUsers(){
+  //   return axios.get(API_URL + 'admin/users', {headers: authHeader()});
+  // }
 
   postChangeUserField(data){
     return axios.post(API_URL + "admin/changeusers", {data})
+  }
+
+  postUploadFile(data){
+    return axios.post(API_URL + "admin/upload", data, {headers: authHeader(),  'Content-Type': 'multipart/form-data'})
   }
 }
 

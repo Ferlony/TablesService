@@ -71,10 +71,10 @@ fun Application.configureRouting() {
                 нужно проверить подлинность токена и call.respond вернуть json по примеру ниже,
                 табличку нужно взять из бд по поиску по названию ее серилизовать в json для call.respond
                 */
-                val column1: TableWithMarks = TableWithMarks("1", "Что то про C", "abooba", "Ryan Gosling", "Done", "Yes", "Class A")
-                val column2: TableWithMarks = TableWithMarks("2", "Что то про java", "abooba", "Pepe", "Prog", "No", "Class A")
+                val string1: TableWithMarks = TableWithMarks("1", "Что то про C", "abooba", "Ryan Gosling", "Done", "Yes", "Class A")
+                val string2: TableWithMarks = TableWithMarks("2", "Что то про java", "abooba", "Pepe", "Prog", "No", "Class A")
 
-                val table: List<TableWithMarks> = listOf(column1, column2)
+                val table: List<TableWithMarks> = listOf(string1, string2)
 
                 val json = Json.encodeToString(table)
                 call.respond(json)
@@ -109,6 +109,44 @@ fun Application.configureRouting() {
                 call.respond(HttpStatusCode.OK, "Status changed")
 //                else
 //                  call.response(HttpStatusCode.NotModified, "Error")
+            }
+        }
+        route("/admin/upload"){
+            post{
+                /*
+                       Этот путь в authenticate засунуть нужно, просто для проверки
+                       работоспособности здесь оставил.
+                       Загрузка ексель таблички в бд
+                       post request:
+                       Если формат *.xls
+                       -----------------------------150429568233010961794131652772
+Content-Disposition: form-data; name="file"; filename="Class_A.xls"
+Content-Type: application/vnd.ms-excel
+
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head >
+  <body>
+
+    <table>
+      <thead>
+        <tr><th><b>id</b></th><th><b>topic</b></th><th><b>description</b></th><th><b>user</b></th><th><b>userstatus</b></th><th><b>checked</b></th><th><b>tabletitle</b></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Что то про C</td><td>abooba</td><td>Ryan Gosling</td><td>Done</td><td>Yes</td><td>Class A</td></tr>
+        <tr><td>2</td><td>Что то про java</td><td>abooba</td><td>Pepe</td><td>Prog</td><td>No</td><td>Class A</td></tr>
+      </tbody>
+    </table>
+
+  </body>
+</html >
+
+-----------------------------150429568233010961794131652772--
+                Если формат
+                Нужно положить его в бд
+                       */
+                call.respond(HttpStatusCode.OK)
             }
         }
 

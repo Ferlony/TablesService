@@ -39,3 +39,8 @@ data class TableWithMarks(
     val checked: String,
     val tabletitle: String
 ): Principal
+
+@Serializable
+data class Data(val data: String): Principal
+@Serializable
+data class DataTable(val data: List<TableWithMarks>): Principal

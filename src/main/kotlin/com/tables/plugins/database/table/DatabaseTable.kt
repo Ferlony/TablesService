@@ -19,13 +19,12 @@ class DatabaseTable : IDatabaseTable {
         BaseForTables.selectAll().map(::resultRowToTable)
     }
 
-    override suspend fun fullTable(id: String): Tables?= DatabaseTableFactory.dbQuery {
+    override suspend fun fullTable(tibletittle: String): Tables?= DatabaseTableFactory.dbQuery {
         BaseForTables
-            .select(BaseForTables.id eq id)
+            .select(BaseForTables.tabletittle eq tibletittle)
             .map(::resultRowToTable)
             .singleOrNull()
     }
-
     override suspend fun addNewTable(
         id: String,
         topic: String,
@@ -56,7 +55,7 @@ class DatabaseTable : IDatabaseTable {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteTable(id: String, topic: String): Boolean {
+    override suspend fun deleteTable(id: String, topic: String): Boolean = DatabaseTableFactory.dbQuery {
         TODO("Not yet implemented")
     }
 
@@ -67,6 +66,10 @@ val table_queres: IDatabaseTable = DatabaseTable().apply {
     runBlocking {
         if(allTables().isEmpty()){
             addNewTable("0", "null", "test", "Done", "No", "Class NULL")
+            addNewTable("1", "null1", "test1", "Done1", "No1", "Class NULL1")
+            addNewTable("2", "null2", "test2", "Done2", "No2", "Class NULL2")
+            addNewTable("3", "null3", "test3", "Done3", "No3", "Class NULL3")
+
         }
     }
 }

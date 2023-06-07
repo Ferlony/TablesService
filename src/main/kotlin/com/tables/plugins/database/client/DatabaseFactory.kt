@@ -2,6 +2,7 @@ package com.tables.plugins.database.client
 
 import com.tables.plugins.database.table.BaseForTables
 import kotlinx.coroutines.*
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.*
 import org.jetbrains.exposed.sql.transactions.experimental.*
@@ -24,7 +25,7 @@ object DatabaseFactory {
         newSuspendedTransaction(Dispatchers.IO) { block() }
 }
 
-
+@Serializable
 data class Test(val username: String, val email: String, val password: String, val role: String, val table: String)
 
 object Users : Table() {

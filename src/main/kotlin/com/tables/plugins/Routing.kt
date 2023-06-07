@@ -18,10 +18,15 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 suspend fun allTables(): List<Tables> {
 
     return table_queres.allTables()
+}
+
+fun isNumeric(s: String): Boolean {
+    return s.chars().allMatch { Character.isDigit(it) }
 }
 
 fun Application.configureRouting() {
@@ -76,7 +81,23 @@ fun Application.configureRouting() {
                     val username = prinicipal!!.payload.getClaim("username").asString()
                     val user = my_queries.findByName(username)
                     val logReq =call.receive<String>()
-                    val jsonFormat = Json.decodeFromString<Data>(logReq)
+                    val jsonFormat = Json.decodeFromString<Tables>(logReq)
+                    if(user!=null){
+                        if(user.table == "all") {
+                            val tables: List<Tables> = table_queres.allTables()
+                            val json = Json.encodeToString(tables)
+                            call.respond(json) // возвращает все таблицы для модератора или админа
+                        }
+                        else {
+                            println(table_queres.fullTable(jsonFormat.tabletittle))
+                            val table = table_queres.fullTable(jsonFormat.tabletittle)
+                            if(table!= null) {
+                                val json = Json.encodeToString(table)
+                                call.respond(json)
+                            }
+                        }
+                    }
+                    /*val jsonFormat = Json.decodeFromString<Data>(logReq)
 
                     if(user != null && (user.role == "admin" || user.role == "moderator")){
 //                        if(jsonFormat.data == "all") {
@@ -92,7 +113,7 @@ fun Application.configureRouting() {
                             call.respond(json)
                         }
                         else call.respond(HttpStatusCode.NotFound)
-//                        }
+//                      }
                     }
                     if (user != null && user.role =="user"){
                         var table: Tables? = table_queres.fullTable(user.table) // поиск по названию таблицы.
@@ -107,7 +128,7 @@ fun Application.configureRouting() {
                     }
                     else {
                         call.respond(HttpStatusCode.BadRequest)
-                    }
+                    }*/
 
                     /*
                     Этот путь в authenticate засунуть нужно, просто для проверки
@@ -167,8 +188,39 @@ fun Application.configureRouting() {
                     Если формат
                     Нужно положить его в бд
                            */
+                    var logReq = call.receive<String>()
+                    //val regex = "<tbody>.+</tbody>".toRegex()
+                    logReq = logReq
+                        .substringBefore("</tbody>")
+                        .substringAfter("<tbody>")
+                        .trim()
+                        .replace("<td>", "").replace("</td>", ":").replace("<tr>", "").replace("</tr>", "")
+                    logReq +="\n0:"
+                    var string = ""
+                    val s: LinkedList<TableWithMarks> = LinkedList()
+                    val ss:Array<String> = arrayOf("","","","","","","")
+                    var count = 0
+                    logReq.forEach {
+                        if(it==':') {
+                            string = string.trim()
+                            if(isNumeric(string)){
+                                count = 0
+                                if(ss.get(1)!="") s.add(TableWithMarks(ss.get(0),ss.get(1),ss.get(2),ss.get(3),ss.get(4),ss.get(5),ss.get(6)))
+                            }
+                            ss.set(count, string)
+                            count+=1
+                            string = ""
+                        }
+                        else string+=it
+                    }
+                    s.forEach{
+                        table_queres.addNewTable(it.id, it.topic, it.description, it.userstatus, it.checked, it.tabletitle)
+                        val user = my_queries.findByName(it.user)
+                        my_queries.editUserTable(user!!.username, it.tabletitle)
+                    }
 
                     call.respond(HttpStatusCode.OK)
+
                 }
             }
 
@@ -217,9 +269,9 @@ fun Application.configureRouting() {
             }
 
             post("/admin/changeusers"){
-                val principal = call.principal<JWTPrincipal>()
-                val admin = my_queries.findByName(principal!!.payload.getClaim("username").asString())
-                if (admin!= null && admin.role == "admin") {
+                //val principal = call.principal<JWTPrincipal>()
+                //val admin = my_queries.findByName(principal!!.payload.getClaim("username").asString())
+                //if (admin!= null && admin.role == "admin") {
                     val jsonencode = call.receive<String>()
                     val json = Json.parseToJsonElement(jsonencode)
                     val data = json.jsonObject.get("data").toString() // "{role:mod,username: pepega}"
@@ -238,10 +290,10 @@ fun Application.configureRouting() {
                     if(username == null)   call.respond(HttpStatusCode.NotModified, "Error")
                     my_queries.editUser(linkdata.last.replace("\\s+".toRegex(), ""), linkdata.get(1).replace("\\s+".toRegex(), ""))
                     call.respond(HttpStatusCode.OK, "Status changed")
-                }
-                else {
-                    call.respond(HttpStatusCode.Locked)
-                }
+                //}
+                //else {
+                //    call.respond(HttpStatusCode.Locked)
+                //}
                 /*
                 Этот путь в authenticate засунуть нужно, просто для проверки
                 работоспособности здесь оставил.

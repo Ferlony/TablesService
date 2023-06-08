@@ -30,6 +30,14 @@ data class UserRespond(
 ): Principal
 
 @Serializable
+data class AdminRespond(
+    val username: String,
+    val accessToken: String,
+    val email: String,
+    val role: String
+)
+
+@Serializable
 data class TableWithMarks(
     val id: String,
     val topic: String,

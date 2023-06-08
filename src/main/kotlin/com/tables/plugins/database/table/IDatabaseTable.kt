@@ -5,7 +5,7 @@ interface IDatabaseTable {
     suspend fun allTables(): List<Tables>
     suspend fun fullTable(tibletittle: String): Tables?
 
-    suspend fun addNewTable(id: String, topic: String, description: String, userstatus: String, checked: String, tabletittle: String): Tables?
-    suspend fun editTable(id: String, topic: String, description: String, userstatus: String, checked: String, tabletittle: String): Boolean
-    suspend fun deleteTable(id: String, topic: String): Boolean
+    suspend fun addNewTable(id: String, tabletittle: String, data: String): Tables?
+    suspend fun editTable(id: String, tabletittle: String, data: String): Boolean
+    suspend fun deleteTable(id: String, tabletittle: String, data: String): Boolean
 }

@@ -29,9 +29,9 @@ object DatabaseFactory {
 data class Test(val username: String, val email: String, val password: String, val role: String, val table: String)
 
 object Users : Table() {
-    val username = varchar("username", 128)
+    val username = varchar("username", 1024)
     val email = varchar("email", 1024)
     val password = varchar("password", 1024)
-    val role = varchar("role", 128)
+    val role = varchar("role", 1024)
     val table = varchar("table", 1024)
 }

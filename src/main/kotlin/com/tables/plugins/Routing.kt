@@ -79,23 +79,27 @@ fun Application.configureRouting() {
                 post{
                     val prinicipal = call.principal<JWTPrincipal>()
                     val username = prinicipal!!.payload.getClaim("username").asString()
+                    println(username)
                     val user = my_queries.findByName(username)
-                    val logReq =call.receive<String>()
-                    val jsonFormat = Json.decodeFromString<Tables>(logReq)
+                    var logReq =call.receive<String>()
+                    var json = Json.parseToJsonElement(logReq)
+                    var data = json.jsonObject.get("data").toString()
+                    println(data)
+                    //val jsonFormat = Json.decodeFromString<Tables>(logReq)
                     if(user!=null){
-                        if(user.table == "all") {
+                        /*if(user.table == "all") {
                             val tables: List<Tables> = table_queres.allTables()
                             val json = Json.encodeToString(tables)
                             call.respond(json) // возвращает все таблицы для модератора или админа
                         }
-                        else {
-                            println(table_queres.fullTable(jsonFormat.tabletittle))
-                            val table = table_queres.fullTable(jsonFormat.tabletittle)
+                        else {*/
+                            println(table_queres.fullTable(data.replace("\"", "")))
+                            val table = table_queres.fullTable(data.replace("\"", ""))
                             if(table!= null) {
                                 val json = Json.encodeToString(table)
                                 call.respond(json)
                             }
-                        }
+                      //  }
                     }
                     /*val jsonFormat = Json.decodeFromString<Data>(logReq)
 

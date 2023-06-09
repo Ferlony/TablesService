@@ -46,7 +46,7 @@ fun Application.configureRouting() {
                     call.respond(HttpStatusCode(505, "LOL"), "This user does not exist")
                 }
                 val userResp: UserRegister = UserRegister(user!!.username, user.email, user.password,  user.role, listOf(user.table))
-                if(user.role == "admin" || user.role == "moderator"){
+                if(user.role == "admin" || user.role == "mod"){
                     val alltables = allTables()
                     val stables : LinkedList<String> = LinkedList()
                     alltables.forEach { it ->
@@ -185,7 +185,7 @@ fun Application.configureRouting() {
                 val principal = call.principal<JWTPrincipal>()
                 val name = principal!!.payload.getClaim("username").asString()
                 val mod = my_queries.findByName(name)
-                if(mod != null && mod.role == "moderator") {
+                if(mod != null && mod.role == "mod") {
                     val allUsers = my_queries.allUsers()
                     print(allUsers) // [Test(username=admin, email=admin@gmail.com, password=admin, role=admin, table=all), Test(username=pepega, email=pepega@gmail.com, password=pepega, role=user, table=none), Test(username=test3, email=test@gmail.com, password=test, role=user, table=none), Test(username=test4, email=test@gmail.com, password=test, role=user, table=none), Test(username=test6, email=test@gmail.com, password=test, role=user, table=none)]
                     val json = Json.encodeToString(allUsers)

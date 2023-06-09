@@ -69,24 +69,61 @@ fun Application.configureRouting() {
                 call.respond(json)
             }
         }
-
-        authenticate{
-            route("/home"){
-                post{
-                    val logReq =call.receive<String>()
-                    val json = Json.parseToJsonElement(logReq)
-                    val data = json.jsonObject.get("data").toString()
-                    println(data)
-                    println(table_queres.fullTable(data.replace("\"", "")))
-                    val table = table_queres.fullTable(data.replace("\"", ""))
-                    if(table!= null) {
-                        val jsonElem = Json.decodeFromString(DataTable.serializer(), table.data)
-                        println(jsonElem)
-                        val jsonString = Json.encodeToString(jsonElem.data)
-                        call.respond(jsonString)
-                    }
+        route("/home"){
+            post{
+                val logReq =call.receive<String>()
+                val json = Json.parseToJsonElement(logReq)
+                val data = json.jsonObject.get("data").toString()
+                println(data)
+                println(table_queres.fullTable(data.replace("\"", "")))
+                val table = table_queres.fullTable(data.replace("\"", ""))
+                if(table!= null) {
+                    val jsonElem = Json.decodeFromString(DataTable.serializer(), table.data)
+                    println(jsonElem)
+                    val jsonString = Json.encodeToString(jsonElem.data)
+                    call.respond(jsonString)
                 }
             }
+        }
+
+        post("/admin/changeusers"){
+            val jsonencode = call.receive<String>()
+            val json = Json.parseToJsonElement(jsonencode)
+            val data = json.jsonObject.get("data").toString() // "{role:mod,username: pepega}"
+            var userData = ""
+            val linkdata : LinkedList<String> = LinkedList()
+            data.forEach {
+                if(it != '{' && it != '"' && it != '}' && it !=':' && it !=','){
+                    userData+=it
+                } else {
+                    if(it == ':' || it =='}' || it == ',') linkdata.add(userData)
+                    userData=""
+                }
+
+            } // последний элемент ВСЕГДА должен быть username и его нельзя менять, либо нельзя менять почту, но этого я не сделал!
+            val username = my_queries.findByName(linkdata.last.replace("\\s+".toRegex(), ""))
+            if(username == null)   call.respond(HttpStatusCode.NotModified, "Error")
+            my_queries.editUser(linkdata.last.replace("\\s+".toRegex(), ""), linkdata.get(1).replace("\\s+".toRegex(), ""))
+            call.respond(HttpStatusCode.OK, "Status changed")
+        }
+
+        route("/savetable") {
+            post{
+                val logReq = call.receive<String>()
+                var json = Json.parseToJsonElement(logReq)
+                var data = json.jsonObject.get("data").toString() // запрос идет именно так:  {"data":"[{\"id\":\"1\",\"topic\":\"Что то про C\",\"description\":\"abooba\".....
+                data = data.replace("\\", "")
+                data = data.substring(1, data.length-1)
+                data = "{\"data\":$data}"
+                val s : DataTable = Json.decodeFromString(DataTable.serializer(), data)
+                val jsonTable = Json.encodeToString(DataTable.serializer(),s)
+                table_queres.addNewTable("2",s.data.get(0).tabletitle,jsonTable) //TODO
+                call.respond(HttpStatusCode.Created,"Table Saved")
+            }
+        }
+
+        authenticate{
+
 
             route("/admin/upload"){
                 post{
@@ -117,25 +154,12 @@ fun Application.configureRouting() {
                     val dataTable = DataTable(s)
                     val json = Json.encodeToString(DataTable.serializer(),dataTable)
                     table_queres.addNewTable("1", ss.get(6), json) // TODO
-                    call.respond(HttpStatusCode.OK)
+                    call.respond(HttpStatusCode.OK, "Table added")
 
                 }
             }
 
-            route("/savetable") {
-                post{
-                    val logReq = call.receive<String>()
-                    var json = Json.parseToJsonElement(logReq)
-                    var data = json.jsonObject.get("data").toString() // запрос идет именно так:  {"data":"[{\"id\":\"1\",\"topic\":\"Что то про C\",\"description\":\"abooba\".....
-                    data = data.replace("\\", "")
-                    data = data.substring(1, data.length-1)
-                    data = "{\"data\":$data}"
-                    val s : DataTable = Json.decodeFromString(DataTable.serializer(), data)
-                    val jsonTable = Json.encodeToString(DataTable.serializer(),s)
-                    table_queres.addNewTable("2",s.data.get(0).tabletitle,jsonTable) //TODO
-                    call.respond(HttpStatusCode.Created,"Table Saved")
-                }
-            }
+
 
             get("/admin"){
                 val principal = call.principal<JWTPrincipal>()
@@ -152,26 +176,7 @@ fun Application.configureRouting() {
                 }
             }
 
-            post("/admin/changeusers"){
-                    val jsonencode = call.receive<String>()
-                    val json = Json.parseToJsonElement(jsonencode)
-                    val data = json.jsonObject.get("data").toString() // "{role:mod,username: pepega}"
-                    var userData = ""
-                    val linkdata : LinkedList<String> = LinkedList()
-                    data.forEach {
-                        if(it != '{' && it != '"' && it != '}' && it !=':' && it !=','){
-                            userData+=it
-                        } else {
-                            if(it == ':' || it =='}' || it == ',') linkdata.add(userData)
-                            userData=""
-                        }
 
-                    } // последний элемент ВСЕГДА должен быть username и его нельзя менять, либо нельзя менять почту, но этого я не сделал!
-                    val username = my_queries.findByName(linkdata.last.replace("\\s+".toRegex(), ""))
-                    if(username == null)   call.respond(HttpStatusCode.NotModified, "Error")
-                    my_queries.editUser(linkdata.last.replace("\\s+".toRegex(), ""), linkdata.get(1).replace("\\s+".toRegex(), ""))
-                    call.respond(HttpStatusCode.OK, "Status changed")
-            }
 
             get("/mod"){
                 /*

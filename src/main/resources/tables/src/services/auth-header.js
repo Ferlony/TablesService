@@ -37,7 +37,7 @@ class UserService {
   // }
 
   postChangeUserField(data){
-    return axios.post(API_URL + "admin/changeusers", {data})
+    return axios.post(API_URL + "admin/changeusers", {data, headers: authHeader()})
   }
 
   postUploadFile(data){

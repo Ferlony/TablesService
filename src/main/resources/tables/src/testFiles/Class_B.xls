@@ -9,8 +9,8 @@
         <tr><th><b>id</b></th><th><b>topic</b></th><th><b>description</b></th><th><b>user</b></th><th><b>userstatus</b></th><th><b>checked</b></th><th><b>tabletitle</b></th></tr>
       </thead>
       <tbody>
-        <tr><td>1</td><td>Что то про C</td><td>abooba</td><td>Ryan Gosling</td><td>Done</td><td>Yes</td><td>Class A</td></tr>
-        <tr><td>2</td><td>Что то про java</td><td>abooba</td><td>Pepe</td><td>Prog</td><td>No</td><td>Class A</td></tr>
+        <tr><td>1</td><td>Что то про C</td><td>abooba</td><td>Ryan Gosling</td><td>Done</td><td>Yes</td><td>Class B</td></tr>
+        <tr><td>2</td><td>Что то про java</td><td>abooba</td><td>Pepe</td><td>Prog</td><td>No</td><td>Class B</td></tr>
       </tbody>
     </table>
   
